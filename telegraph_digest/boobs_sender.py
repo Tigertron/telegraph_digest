@@ -10,6 +10,9 @@ def send_boobs_to_chat(chat_id):
     token = yaml.safe_load(open(config_name).read())['telegram']['token']
     bot = telepot.Bot(token)
     posts = load_posts(config_name, None)
+    if not posts:
+        print('No new posts to publish')
+        return
     url = create_article(posts, config_name)
     bot.sendMessage(chat_id, url);  #//hehe
 
