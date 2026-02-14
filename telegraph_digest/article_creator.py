@@ -26,6 +26,12 @@ def create_article(posts, config_name):
                 'tag': 'br'
             }
         ])
+    if (not content_list)
+        content_list = [ {
+                    'tag': 'p',
+                    'children': "no boobs here :(("
+                }
+            ]
     response = telegraph.create_page(
         'Boobs',
         content_list,
