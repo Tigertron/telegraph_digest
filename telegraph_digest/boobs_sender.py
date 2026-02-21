@@ -17,8 +17,7 @@ def send_boobs_to_chat(chat_id):
         print('No new posts to publish')
         return
     url = create_article(posts, config_name, stats={'analyzed': analyzed, 'repeats': repeats})
-    msg = 'Analyzed: %d, duplicates: %d\n%s' % (analyzed, repeats, url)
-    bot.sendMessage(chat_id, msg)
+    bot.sendMessage(chat_id, url)
 
 
 if __name__ == '__main__':
