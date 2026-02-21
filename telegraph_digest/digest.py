@@ -44,8 +44,13 @@ def was_before(url, old_content):
 
 
 def good_stufff(subs, reddit, old_content):
+    # Returns: dict with keys 'posts', 'analyzed', 'repeats'
+
     submissons_with_cross_scores = dict()
+    analyzed = 0
+    repeats = 0
     for submission in reddit.subreddit(subs).top('month'):
+        analyzed += 1
         sub_obj = {
             'self': submission,
             'cross_score': submission.score,
@@ -53,17 +58,26 @@ def good_stufff(subs, reddit, old_content):
         }
 
         if sub_obj['img_data']['type'] in [utils.TYPE_GIF, utils.TYPE_IMG]:
-            if not was_before(sub_obj['img_data']['url'], old_content):
+            if was_before(sub_obj['img_data']['url'], old_content):
+                repeats += 1
+            else:
                 submissons_with_cross_scores[submission.id] = sub_obj
                 # print submission.score, sub_obj['img_data']['url']
-
+        else:
+            print(f"Skipping url '{sub_obj['img_data']['url']}' because type is '{sub_obj['img_data']['type']}'")
         if len(submissons_with_cross_scores) == HOT_LIMIT:
             break
 
-    return submissons_with_cross_scores
+    return {
+        'posts': submissons_with_cross_scores,
+        'analyzed': analyzed,
+        'repeats': repeats,
+    }
 
 
 def supply(sub, config, old_content):
+    # Returns: dict with keys 'posts', 'analyzed', 'repeats'
+
     reddit = praw.Reddit(user_agent=config['reddit']['user_agent'],
                         client_id=config['reddit']['client_id'],
                         client_secret=config['reddit']['client_secret'])
@@ -72,6 +86,8 @@ def supply(sub, config, old_content):
 
 
 def load_posts(config_filename, sub):
+    # Returns: dict with keys 'posts', 'analyzed', 'repeats'
+
     with open(config_filename) as config_file:
         config = yaml.safe_load(config_file.read())
     old_content = get_old_content_collection(config)
