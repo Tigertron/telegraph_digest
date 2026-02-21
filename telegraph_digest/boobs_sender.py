@@ -9,12 +9,16 @@ def send_boobs_to_chat(chat_id):
     config_name = 'prod.yml'
     token = yaml.safe_load(open(config_name).read())['telegram']['token']
     bot = telepot.Bot(token)
-    posts = load_posts(config_name, None)
+    result = load_posts(config_name, None)
+    posts = result['posts']
+    analyzed = result['analyzed']
+    repeats = result['repeats']
     if not posts:
         print('No new posts to publish')
         return
-    url = create_article(posts, config_name)
-    bot.sendMessage(chat_id, url);  #//hehe
+    url = create_article(posts, config_name, stats={'analyzed': analyzed, 'repeats': repeats})
+    msg = 'Analyzed: %d, duplicates: %d\n%s' % (analyzed, repeats, url)
+    bot.sendMessage(chat_id, msg)
 
 
 if __name__ == '__main__':
