@@ -13,19 +13,36 @@ def create_article(posts, config_name, stats=None):
     for number, post in enumerate(posts.values()):
         title = post['self'].title
         url = post['img_data']['url']
-        content_list.extend([
-            {
+        ext = post['img_data'].get('extension') or ''
+        # title
+        content_list.extend([{
                 'tag': 'p',
                 'children': ['%d. %s' % (number + 1, title)]
-            },
-            {
-                'tag': 'img',
-                'attrs': {'src': url}
-            },
-            {
-                'tag': 'br'
-            }
-        ])
+            }])
+        # content
+        if ext == 'mp4':
+            content_list.extend([
+                {
+                    'tag': 'video',
+                    'attrs': {'src': url}
+                },
+                {
+                    'tag': 'p',
+                    'children': [{
+                        'tag': 'a', 'attrs': {'href': url}, 
+                        'children': ['Source link (download in progress)']
+                    }]
+                }
+            ])
+        else:
+            content_list.extend([
+                {
+                    'tag': 'img',
+                    'attrs': {'src': url}
+                }
+            ])
+        # next line
+        content_list.extend([ { 'tag': 'br' } ])
     
     if stats is not None:
         content_list.append({
