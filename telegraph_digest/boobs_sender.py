@@ -1,5 +1,6 @@
 import telepot
 import yaml
+import time
 
 from article_creator import create_article
 from digest import load_posts
@@ -17,6 +18,8 @@ def send_boobs_to_chat(chat_id):
         print('No new posts to publish')
         return
     url = create_article(posts, config_name, stats={'analyzed': analyzed, 'repeats': repeats})
+    print('Waiting 10 minutes before sending message...')
+    time.sleep(600)
     bot.sendMessage(chat_id, url)
 
 
