@@ -1,6 +1,5 @@
 import telepot
 import yaml
-import time
 
 from article_creator import create_article
 from digest import load_posts
@@ -10,17 +9,12 @@ def send_boobs_to_chat(chat_id):
     config_name = 'prod.yml'
     token = yaml.safe_load(open(config_name).read())['telegram']['token']
     bot = telepot.Bot(token)
-    result = load_posts(config_name, None)
-    posts = result['posts']
-    analyzed = result['analyzed']
-    repeats = result['repeats']
+    posts = load_posts(config_name, None)
     if not posts:
         print('No new posts to publish')
         return
-    url = create_article(posts, config_name, stats={'analyzed': analyzed, 'repeats': repeats})
-    print('Waiting 10 minutes before sending message...')
-    time.sleep(600)
-    bot.sendMessage(chat_id, url)
+    url = create_article(posts, config_name)
+    bot.sendMessage(chat_id, url);  #//hehe
 
 
 if __name__ == '__main__':
